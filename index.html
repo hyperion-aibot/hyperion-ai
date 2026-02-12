@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperion AI Bot - Assistant Gaming par Vision</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- ===== PARTIE 1 PAYPAL - TON CLIENT ID VALIDE ===== -->
+    <script 
+        src="https://www.paypal.com/sdk/js?client-id=BAA2XRcAtFdCqmJ960S5QRtGTkhqlFaoE1cHMpYnEigfaQzNVKka08pNl-f_x-D66urkaXRUrq3xTQ9ALY&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+    </script>
+    
+    <style>
+        /* TES STYLES ORIGINAUX - INCHANGÉS */
+        :root {
+            --primary-color: #0a0e17;
+            --secondary-color: #121828;
+            --accent-color: #00d2ff;
+            --accent-secondary: #6a11cb;
+            --dark-bg: #050811;
+            --darker-bg: #03060b;
+            --card-bg: #0d1525;
+            --text-color: #e0e0ff;
+            --text-muted: #8a8dab;
+            --success-color: #00ff9d;
+            --warning-color: #ffb300;
+            --error-color: #ff3d71;
+            --border-color: #1a2238;
+            --glow-color: rgba(0, 210, 255, 0.3);
+            --code-bg: #0a0f1a;
+            --code-border: #1a2b4a;
+            --info-color: #00a8ff;
+            --discord-color: #5865F2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 17, 203, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 210, 255, 0.1) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--dark-bg), var(--darker-bg));
+        }
+
+        h1, h2, h3, h4, .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(5, 8, 17, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+        }
+
+        .discord-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--discord-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        .discord-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .discord-button:hover::before {
+            left: 0;
+        }
+
+        .discord-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+            background-color: #4752c4;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+        }
+
+        .nav-buy-button {
+            display: inline-block;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 120px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 30%, rgba(0, 210, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(106, 17, 203, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.1;
+            text-shadow: 0 0 20px var(--glow-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: var(--text-muted);
+        }
+
+        .tech-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .tech-badge {
+            background-color: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 50px;
+            padding: 8px 20px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+            color: white;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            left: 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(106, 17, 203, 0.4);
+        }
+
+        /* Code Section */
+        .code-section {
+            padding: 80px 0;
+            background-color: var(--darker-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 0 auto 30px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            width: fit-content;
+        }
+
+        .code-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .code-button:hover::before {
+            left: 0;
+        }
+
+        .code-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(106, 17, 203, 0.4);
+        }
+
+        .code-button i {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .code-button.active i {
+            transform: rotate(180deg);
+        }
+
+        .code-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .code-container.active {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 30px;
+        }
+
+        .code-display {
+            background-color: var(--code-bg);
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid var(--code-border);
+            font-family: 'Courier New', monospace;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--code-border);
+        }
+
+        .code-header h3 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-button {
+            background-color: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            color: var(--accent-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background-color: rgba(0, 210, 255, 0.2);
+        }
+
+        .code-display pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-display .comment { color: #6a9955; font-style: italic; }
+        .code-display .function { color: #dcdcaa; }
+        .code-display .keyword { color: #569cd6; }
+        .code-display .string { color: #ce9178; }
+        .code-display .number { color: #b5cea8; }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: var(--darker-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 80px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 210, 255, 0.5);
+        }
+
+        .feature-icon { font-size: 3rem; margin-bottom: 25px; color: var(--accent-color); }
+        .feature-card h3 { font-size: 1.6rem; margin-bottom: 15px; color: var(--text-color); }
+        .feature-card p { color: var(--text-muted); margin-bottom: 20px; }
+        .feature-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .feature-tag { background-color: rgba(0, 210, 255, 0.1); color: var(--accent-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+
+        /* Development Status */
+        .development-status {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .development-card {
+            background-color: rgba(0, 168, 255, 0.1);
+            border: 2px solid var(--info-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .development-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--info-color), var(--accent-color));
+        }
+
+        .development-card h3 {
+            color: var(--info-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .development-card h3 i { font-size: 2rem; }
+        .development-card p { color: var(--text-color); margin-bottom: 15px; line-height: 1.8; }
+        .development-card ul { list-style: none; margin: 20px 0; }
+        .development-card li { color: var(--text-color); margin-bottom: 12px; padding-left: 30px; position: relative; }
+        .development-card li::before { content: '⟳'; position: absolute; left: 0; color: var(--info-color); font-weight: bold; font-size: 1.2rem; }
+        .development-card .highlight { background-color: rgba(0, 168, 255, 0.2); padding: 15px; border-radius: 8px; border-left: 3px solid var(--info-color); margin: 20px 0; }
+
+        /* Technical Details */
+        .technical {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .tech-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s;
+        }
+
+        .tech-card:hover { border-color: var(--accent-color); }
+        .tech-card h4 { color: var(--accent-color); margin-bottom: 15px; font-size: 1.2rem; }
+        .tech-card ul { list-style: none; }
+        .tech-card li { color: var(--text-muted); margin-bottom: 8px; position: relative; padding-left: 15px; }
+        .tech-card li::before { content: '▸'; position: absolute; left: 0; color: var(--accent-color); }
+
+        /* Compatibility Details */
+        .compatibility-details {
+            padding: 80px 0;
+            background-color: var(--darker-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .compatibility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .compat-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .compat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .compat-icon { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 20px; }
+        .compat-card h3 { color: var(--text-color); margin-bottom: 15px; font-size: 1.4rem; }
+        .compat-card p { color: var(--text-muted); line-height: 1.7; margin-bottom: 10px; }
+
+        /* Security & Warning */
+        .security {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .warning-card {
+            background-color: rgba(255, 59, 113, 0.1);
+            border: 2px solid var(--error-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .warning-card h3 {
+            color: var(--error-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .warning-card h3 i { font-size: 2rem; }
+        .warning-card p { color: var(--text-color); margin-bottom: 15px; line-height: 1.8; }
+
+        .info-card {
+            background-color: rgba(255, 179, 0, 0.1);
+            border: 2px solid var(--warning-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .info-card h3 {
+            color: var(--warning-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-card h3 i { font-size: 2rem; }
+        .info-card p { color: var(--text-color); margin-bottom: 15px; line-height: 1.8; }
+
+        /* Requirements Section */
+        .requirements {
+            padding: 100px 0;
+            background-color: var(--darker-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .req-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 35px 30px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .req-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .req-tier { font-size: 1.2rem; color: var(--accent-color); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .req-fps { font-size: 1.8rem; color: var(--success-color); font-weight: 900; margin-bottom: 25px; font-family: 'Orbitron', sans-serif; }
+        .req-specs { list-style: none; text-align: left; }
+        .req-specs li { color: var(--text-muted); margin-bottom: 12px; padding-left: 25px; position: relative; }
+        .req-specs li::before { content: '✓'; position: absolute; left: 0; color: var(--success-color); font-weight: bold; }
+
+        .performance-note {
+            background-color: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .performance-note h4 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .performance-note p { color: var(--text-color); margin-bottom: 12px; line-height: 1.6; }
+        .performance-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .performance-tip { background-color: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent-color); }
+        .performance-tip h5 { color: var(--accent-color); margin-bottom: 8px; font-size: 1rem; }
+        .performance-tip p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0; }
+
+        /* Refund Policy */
+        .refund-policy {
+            padding: 80px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .policy-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .policy-card h3 { color: var(--accent-color); margin-bottom: 25px; font-size: 1.8rem; }
+        .policy-card p { color: var(--text-muted); margin-bottom: 20px; line-height: 1.8; }
+        .policy-card ul { list-style: none; margin-bottom: 25px; }
+        .policy-card li { color: var(--text-muted); margin-bottom: 15px; padding-left: 25px; position: relative; }
+        .policy-card li::before { content: '•'; position: absolute; left: 0; color: var(--accent-color); font-size: 1.5rem; }
+
+        /* ========== GUIDE D'UTILISATION - RESTRUCTURÉ ========== */
+        .guide-page {
+            display: none;
+            padding: 180px 0 100px;
+        }
+
+        .guide-page.active {
+            display: block;
+        }
+
+        .guide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .guide-header h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .guide-header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Table des matières */
+        .guide-toc {
+            background: rgba(0, 210, 255, 0.08);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .guide-toc h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .toc-item:hover {
+            background: rgba(0, 210, 255, 0.1);
+            border-left-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .toc-item i {
+            color: var(--accent-color);
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Livre d'instructions */
+        .guide-book {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .guide-chapter {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .guide-chapter:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px rgba(0, 210, 255, 0.1);
+        }
+
+        .chapter-header {
+            background: linear-gradient(to right, rgba(106, 17, 203, 0.2), rgba(0, 210, 255, 0.1));
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .chapter-header:hover {
+            background: linear-gradient(to right, rgba(106, 17, 203, 0.3), rgba(0, 210, 255, 0.2));
+        }
+
+        .chapter-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-color);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .chapter-title {
+            flex: 1;
+        }
+
+        .chapter-title h3 {
+            color: var(--accent-color);
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .chapter-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .chapter-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+
+        .chapter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chapter-content-inner {
+            padding: 30px;
+        }
+
+        .guide-chapter.active .chapter-content {
+            max-height: 2000px;
+        }
+
+        .guide-chapter.active .chapter-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .step-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            min-width: 40px;
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .step-text h4 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .step-text p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .step-text code {
+            background: var(--code-bg);
+            color: var(--accent-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .guide-note {
+            background: rgba(0, 210, 255, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .guide-warning {
+            background: rgba(255, 59, 113, 0.1);
+            border-left: 4px solid var(--error-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .guide-tip {
+            background: rgba(0, 255, 157, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: none;
+            padding: 180px 0 120px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .login-section.active {
+            display: block;
+        }
+
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-color));
+        }
+
+        .login-title { text-align: center; font-size: 2rem; margin-bottom: 10px; color: var(--accent-color); }
+        .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+        
+        /* PayPal Container Styles */
+        #paypal-container-SEFUAKAPTYATQ {
+            margin: 30px 0;
+            min-height: 150px;
+        }
+
+        .discord-support {
+            background-color: rgba(88, 101, 242, 0.1);
+            border: 2px solid var(--discord-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .discord-support h3 {
+            color: var(--discord-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .discord-support p { color: var(--text-color); margin-bottom: 25px; line-height: 1.8; font-size: 1.1rem; }
+
+        /* Back to home button */
+        .back-to-home {
+            display: inline-block;
+            background-color: var(--card-bg);
+            color: var(--accent-color);
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+        }
+
+        .back-to-home:hover {
+            background-color: rgba(0, 210, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        /* Mobile menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-color);
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-menu.active { display: block; }
+        .mobile-menu-links { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+        .mobile-menu-links a { color: var(--text-color); text-decoration: none; font-size: 1.1rem; padding: 10px; display: block; border-bottom: 1px solid var(--border-color); transition: color 0.3s; }
+        .mobile-menu-links a:hover { color: var(--accent-color); }
+        .mobile-menu-links a.active { color: var(--accent-color); }
+        .mobile-discord-button { display: flex; align-items: center; gap: 10px; background-color: var(--discord-color); color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 20px; justify-content: center; }
+
+        @media (max-width: 1024px) {
+            .nav-links { gap: 15px; }
+            .discord-button { padding: 8px 15px; font-size: 0.85rem; }
+            .nav-buy-button { padding: 6px 15px; font-size: 0.85rem; }
+        }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .mobile-menu-toggle { display: block; }
+            .hero h1 { font-size: 2.8rem; }
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 150px 0 80px; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero-subtitle { font-size: 1.2rem; }
+            .hero p { font-size: 1rem; }
+            .section-title { font-size: 2.2rem; }
+            .guide-header h1 { font-size: 2.2rem; }
+            .login-section { padding: 150px 0 80px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>HYPERION AI</span>
+                </div>
+                
+                <button class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <ul class="nav-links">
+                    <li><a href="#" class="active" data-page="home">Accueil</a></li>
+                    <li><a href="#" data-page="features">Fonctionnalités</a></li>
+                    <li><a href="#" data-page="development">Développement</a></li>
+                    <li><a href="#" data-page="compatibility">Compatibilité</a></li>
+                    <li><a href="#" data-page="security">Sécurité</a></li>
+                    <li><a href="#" data-page="requirements">Configurations</a></li>
+                    <li><a href="#" data-page="guide">Guide</a></li>
+                    <li><a href="#" class="nav-buy-button" data-page="login">S'abonner</a></li>
+                </ul>
+                <a href="https://discord.gg/8Ma63wBayu" class="discord-button" target="_blank">
+                    <i class="fab fa-discord"></i> <span>Rejoindre le Discord</span>
+                </a>
+            </nav>
+            
+            <div class="mobile-menu">
+                <ul class="mobile-menu-links">
+                    <li><a href="#" class="active" data-page="home">Accueil</a></li>
+                    <li><a href="#" data-page="features">Fonctionnalités</a></li>
+                    <li><a href="#" data-page="development">Développement</a></li>
+                    <li><a href="#" data-page="compatibility">Compatibilité</a></li>
+                    <li><a href="#" data-page="security">Sécurité</a></li>
+                    <li><a href="#" data-page="requirements">Configurations</a></li>
+                    <li><a href="#" data-page="guide">Guide d'Utilisation</a></li>
+                    <li><a href="#" data-page="login">S'abonner</a></li>
+                </ul>
+                <a href="https://discord.gg/8Ma63wBayu" class="mobile-discord-button" target="_blank">
+                    <i class="fab fa-discord"></i> Rejoindre le Discord
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME PAGE -->
+    <section id="home-page">
+        <div class="hero">
+            <div class="container">
+                <h1>HYPERION AI</h1>
+                <p class="hero-subtitle">SYSTÈME DE VISION PAR INTELLIGENCE ARTIFICIELLE</p>
+                <p>Logiciel de détection de cibles par capture d'écran et vision par ordinateur. Aucune lecture mémoire - fonctionnement simple et efficace.</p>
+                
+                <div class="tech-badges">
+                    <div class="tech-badge">Vision par Ordinateur</div>
+                    <div class="tech-badge">YOLO ONNX</div>
+                    <div class="tech-badge">Executable Compilé</div>
+                    <div class="tech-badge">Anti-recul</div>
+                    <div class="tech-badge">Aucune Lecture Mémoire</div>
+                    <div class="tech-badge">Multi-Interface</div>
+                </div>
+                
+                <a href="#" class="cta-button" data-page="login">S'abonner - 25€/mois</a>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <div class="container">
+                <button class="code-button" id="code-toggle">
+                    <i class="fas fa-chevron-down"></i>
+                    Afficher le Code C++ Teensy/Arduino
+                </button>
+                
+                <div class="code-container" id="code-container">
+                    <div class="code-display">
+                        <div class="code-header">
+                            <h3><i class="fas fa-code"></i> Code Teensy pour Protocole Série : M,dx,dy\n</h3>
+                            <button class="copy-button" id="copy-code">
+                                <i class="fas fa-copy"></i> Copier
+                            </button>
+                        </div>
+                        <pre id="code-content"><span class="comment">// =========================================================
+// CODE TEENSY POUR PROTOCOLE SERIE : M,dx,dy\n
+// =========================================================</span>
+
+<span class="keyword">void</span> <span class="function">setup</span>() {
+  <span class="comment">// Le baud rate DOIT correspondre à celui de votre script Python (115200)</span>
+  Serial.<span class="function">begin</span>(115200); 
+}
+
+<span class="keyword">void</span> <span class="function">loop</span>() {
+  <span class="keyword">if</span> (Serial.<span class="function">available</span>()) {
+    
+    <span class="comment">// Lire la ligne complète envoyée par Python: "M,dx,dy\n"</span>
+    <span class="keyword">String</span> command = Serial.<span class="function">readStringUntil</span>(<span class="string">'\n'</span>);
+
+    <span class="comment">// Vérifier si c'est une commande de mouvement valide</span>
+    <span class="keyword">if</span> (command.<span class="function">length</span>() > <span class="number">0</span> && command.<span class="function">startsWith</span>(<span class="string">"M,"</span>)) {
+
+      <span class="comment">// Isoler les valeurs après "M,"</span>
+      <span class="keyword">String</span> values = command.<span class="function">substring</span>(<span class="number">2</span>);
+      <span class="keyword">int</span> commaIndex = values.<span class="function">indexOf</span>(<span class="string">','</span>);
+
+      <span class="keyword">if</span> (commaIndex != -<span class="number">1</span>) {
+        
+        <span class="comment">// Extraction et conversion</span>
+        <span class="keyword">String</span> dxString = values.<span class="function">substring</span>(<span class="number">0</span>, commaIndex);
+        <span class="keyword">String</span> dyString = values.<span class="function">substring</span>(commaIndex + <span class="number">1</span>);
+
+        <span class="keyword">int</span> dx = dxString.<span class="function">toInt</span>();
+        <span class="keyword">int</span> dy = dyString.<span class="function">toInt</span>();
+
+        <span class="comment">// Déplacer la souris</span>
+        Mouse.<span class="function">move</span>(dx, dy);
+      }
+    }
+  }
+  <span class="function">delay</span>(<span class="number">1</span>); 
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="container">
+                <h2 class="section-title">Technologie Avancée</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Capture d'Écran Sécurisée</h3>
+                        <p>Contrairement aux aimbots classiques, Hyperion ne lit PAS la mémoire du jeu. Il capture l'écran et analyse l'image via IA pour localiser les cibles.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Zéro Accès Mémoire</span>
+                            <span class="feature-tag">Vision par ordinateur</span>
+                            <span class="feature-tag">Analyse Image</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Performance Optimisée</h3>
+                        <p>Inference accélérée GPU directML compatible AMD & Nvidia. Aucun besoin de droits administrateur pour fonctionner.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Pas d'admin requis</span>
+                            <span class="feature-tag">Executable Standalone</span>
+                            <span class="feature-tag">Multi-threading</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
+                        <h3>Contrôles Multiples</h3>
+                        <p>Support complet pour Logitech GHUB 2021, Teensy, Razer (Synapse 3 ou 4) et manette virtuelle Xbox. Anti-recul intégré.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Logitech GHUB 2021</span>
+                            <span class="feature-tag">Teensy</span>
+                            <span class="feature-tag">Razer Synapse 3/4</span>
+                            <span class="feature-tag">Manette Xbox</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="development-status" id="development-section">
+            <div class="container">
+                <h2 class="section-title">Prérequis OBLIGATOIRES</h2>
+                <div class="development-card">
+                    <h3><i class="fas fa-exclamation-circle"></i> ViGEmBus - INDISPENSABLE</h3>
+                    <p><strong>Hyperion ne se lance PAS sans ViGEmBus installé sur votre système.</strong> C'est le pilote qui permet la création de la manette virtuelle, indispensable au fonctionnement du logiciel, même si vous utilisez Logitech ou Razer.</p>
+                    <div class="highlight">
+                        <p><strong>🔴 Téléchargez et installez ViGEmBus AVANT de lancer Hyperion :</strong> <a href="https://github.com/ViGEm/ViGEmBus/releases" target="_blank" style="color: var(--accent-color);">https://github.com/ViGEm/ViGEmBus/releases</a></p>
+                        <p><small>Version recommandée : <strong>ViGEmBus_1.22.0_x64_x86_arm64.exe</strong> - Téléchargez et exécutez le fichier .exe. Installation simple, redémarrage non obligatoire mais recommandé.</small></p>
+                    </div>
+                    <ul>
+                        <li><strong>Installation simple</strong> - Téléchargez le .exe, exécutez-le, suivez les instructions</li>
+                        <li><strong>Une seule installation</strong> - Fait une fois pour toutes, aucun entretien nécessaire</li>
+                        <li><strong>Sans ViGEmBus</strong> - Hyperion affiche une erreur au lancement et se ferme</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="compatibility-details" id="compatibility-section">
+            <div class="container">
+                <h2 class="section-title">Compatibilité & Spécifications</h2>
+                <div class="compatibility-grid">
+                    <div class="compat-card">
+                        <div class="compat-icon"><i class="fab fa-raspberry-pi"></i></div>
+                        <h3>Support Logitech</h3>
+                        <p><strong>Logiciel requis : Logitech GHUB 2021 UNIQUEMENT</strong></p>
+                        <p>Les versions récentes de Logitech GHUB ne sont pas compatibles. Vous DEVEZ installer la version 2021.</p>
+                        <p><strong>🔴 IMPORTANT :</strong> Après installation de GHUB 2021, REDÉMARREZ VOTRE PC avant de lancer Hyperion pour la première fois. Sans redémarrage, le logiciel ne détectera pas l'interface.</p>
+                    </div>
+                    <div class="compat-card">
+                        <div class="compat-icon"><i class="fas fa-keyboard"></i></div>
+                        <h3>Support Razer</h3>
+                        <p><strong>Fonctionne avec Synapse 3 ou 4</strong></p>
+                        <p>Contrairement à Logitech, Razer n'a pas de restriction de version. Synapse 3 et Synapse 4 sont tous les deux compatibles.</p>
+                        <p>Vous devez posséder au moins un appareil Razer (clavier, souris, casque) connecté et reconnu par Synapse.</p>
+                    </div>
+                    <div class="compat-card">
+                        <div class="compat-icon"><i class="fas fa-microchip"></i></div>
+                        <h3>Support Teensy & Arduino</h3>
+                        <p><strong>Solution matérielle fiable</strong></p>
+                        <p>Teensy et Arduino offrent une solution matérielle directe pour l'injection d'entrées. Parfait pour les jeux qui bloquent les entrées logicielles.</p>
+                        <p>Code fourni dans le logiciel et sur le site.</p>
+                    </div>
+                    <div class="compat-card">
+                        <div class="compat-icon"><i class="fab fa-xbox"></i></div>
+                        <h3>Manette Virtuelle Xbox</h3>
+                        <p><strong>Solution universelle</strong></p>
+                        <p>Utilisation de la manette virtuelle Xbox via ViGEmBus. Aucun matériel supplémentaire requis.</p>
+                        <p>Cette méthode est compatible avec la plupart des jeux. Utilisez HidHide si nécessaire pour cacher vos contrôleurs physiques.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security">
+            <div class="container">
+                <h2 class="section-title">Sécurité & Avertissements</h2>
+                <div class="warning-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> AVERTISSEMENT IMPORTANT</h3>
+                    <p>L'IA ne lit ni n'écrit dans la mémoire du jeu, ce qui réduit les risques de détection. Cependant, la prudence reste de mise : toute utilisation excessive ou flagrante peut entraîner des signalements de la part d'autres joueurs et des bannissements manuels.</p>
+                    <p><strong>N'UTILISEZ PAS HYPERION EN MODE COMPÉTITIF. NOUS N'AUTORISONS EN AUCUN CAS SON UTILISATION DANS DES ENVIRONNEMENTS COMPÉTITIFS.</strong></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> INFORMATIONS IMPORTANTES</h3>
+                    <p><strong>🔴 Aucun besoin de droits administrateur :</strong> Hyperion fonctionne parfaitement sans être lancé en tant qu'administrateur.</p>
+                    <p><strong>🔴 ViGEmBus est OBLIGATOIRE :</strong> Sans ce pilote, le logiciel refuse de démarrer. Installez-le avant tout.</p>
+                    <p><strong>🔴 Logitech GHUB 2021 :</strong> REDÉMARREZ VOTRE PC après installation, avant de lancer Hyperion. C'est essentiel.</p>
+                    <p><strong>🔴 Razer Synapse :</strong> Version 3 ou 4, pas de restriction.</p>
+                    <p><strong>🔴 Jeux spécifiques :</strong> Si le jeu auquel vous souhaitez jouer est très spécifique ou peu populaire, il est probable qu'aucun modèle d'IA ne soit déjà entraîné (vous devrez en créer un vous-même).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="requirements">
+            <div class="container">
+                <h2 class="section-title">Configurations Requises</h2>
+                <div class="req-grid">
+                    <div class="req-card">
+                        <div class="req-tier">Config Économique</div>
+                        <div class="req-fps">50-60 FPS</div>
+                        <ul class="req-specs">
+                            <li>CPU : Ryzen 5 5600</li>
+                            <li>GPU : RX 6600 ou RTX 3060</li>
+                            <li>RAM : 16GB DDR4 3200 MHz</li>
+                            <li>OS : Windows 10/11 64-bit</li>
+                        </ul>
+                    </div>
+                    <div class="req-card">
+                        <div class="req-tier">Config Recommandée</div>
+                        <div class="req-fps">60-75 FPS</div>
+                        <ul class="req-specs">
+                            <li>CPU : Ryzen 7 5700X</li>
+                            <li>GPU : RTX 3070 ou RX 6700 XT</li>
+                            <li>RAM : 16GB DDR4 3200 MHz</li>
+                            <li>OS : Windows 10/11 64-bit</li>
+                        </ul>
+                    </div>
+                    <div class="req-card">
+                        <div class="req-tier">Config Haut de Gamme</div>
+                        <div class="req-fps">80-120 FPS</div>
+                        <ul class="req-specs">
+                            <li>CPU : Ryzen 7 7700</li>
+                            <li>GPU : RTX 4070 SUPER ou RX 7800XT</li>
+                            <li>RAM : 32GB DDR5 6000 MHz</li>
+                            <li>OS : Windows 10/11 64-bit</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Note sur les performances -->
+                <div class="performance-note">
+                    <h4><i class="fas fa-chart-line"></i> Note Importante sur les Performances</h4>
+                    <p><strong>⚠️ Les performances dépendent de plusieurs facteurs :</strong></p>
+                    <p>1. <strong>Résolution de capture</strong> : Une résolution plus élevée améliore la précision mais demande plus de ressources.</p>
+                    <p>2. <strong>Poids des modèles ONNX</strong> : Plus le modèle est gros, plus il est précis, mais plus il demande de ressources à votre ordinateur.</p>
+                    <p>3. <strong>Génération d'images</strong> : Il est fortement déconseillé d'activer la génération d'image, car cela peut causer des problèmes avec la détection et créer de l'oscillation de visée avec l'assistance.</p>
+                    
+                    <div class="performance-tips">
+                        <div class="performance-tip">
+                            <h5><i class="fas fa-microchip"></i> GPU - Réserve de Ressources</h5>
+                            <p>Assurez-vous de garder au moins 5% de ressources disponibles sur votre carte graphique pour gérer l'inférence correctement.</p>
+                        </div>
+                        <div class="performance-tip">
+                            <h5><i class="fas fa-tachometer-alt"></i> CPU - Éviter la Saturation</h5>
+                            <p>Évitez de saturer votre processeur. Laissez des cœurs disponibles pour le système et les autres applications.</p>
+                        </div>
+                        <div class="performance-tip">
+                            <h5><i class="fas fa-desktop"></i> FPS - Synchronisation</h5>
+                            <p>Évitez de tourner à plus de FPS que ce que peut afficher votre écran. Bloquez vos FPS au taux de rafraîchissement de votre écran.</p>
+                        </div>
+                        <div class="performance-tip">
+                            <h5><i class="fas fa-sliders-h"></i> Performance Conservatrice</h5>
+                            <p>Soyez conservateur sur les paramètres de performance afin que le logiciel tourne dans les meilleures conditions possibles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="refund-policy">
+            <div class="container">
+                <div class="policy-card">
+                    <h3>Politique de Remboursement</h3>
+                    <p><strong>Toute vente est définitive.</strong> Une fois l'abonnement souscrit, il ne peut être ni annulé ni remboursé, sauf dans les cas prévus par la loi. En finalisant un achat sur notre site web, vous acceptez cette politique de non-remboursement.</p>
+                    <ul>
+                        <li>Avant de vous abonner à Hyperion, assurez-vous que votre ordinateur respecte les spécifications recommandées.</li>
+                        <li>Nous déclinons toute responsabilité en cas de problème avec votre compte de jeu.</li>
+                        <li>Utilisez ce service à vos propres risques.</li>
+                        <li>En cas d'erreur ou de problème technique, veuillez nous contacter sur Discord.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== GUIDE D'UTILISATION ========== -->
+    <section id="guide-page" class="guide-page">
+        <div class="container">
+            <a href="#" class="back-to-home" data-page="home">
+                <i class="fas fa-arrow-left"></i> Retour à l'accueil
+            </a>
+            
+            <div class="guide-header">
+                <h1>📖 MANUEL D'UTILISATION</h1>
+                <p>Suivez les chapitres dans l'ordre pour une configuration réussie. Le logiciel ne nécessite PAS de droits administrateur.</p>
+            </div>
+
+            <!-- Table des matières interactive -->
+            <div class="guide-toc">
+                <h2><i class="fas fa-list"></i> SOMMAIRE</h2>
+                <div class="toc-grid">
+                    <a href="#chapitre0" class="toc-item"><i class="fas fa-download"></i> Étape 0 : ViGEmBus OBLIGATOIRE</a>
+                    <a href="#chapitre1" class="toc-item"><i class="fas fa-download"></i> Chapitre 1 : Installation du logiciel</a>
+                    <a href="#chapitre2" class="toc-item"><i class="fas fa-shield-alt"></i> Chapitre 2 : Configuration Logitech GHUB</a>
+                    <a href="#chapitre3" class="toc-item"><i class="fas fa-spider"></i> Chapitre 3 : Configuration Razer</a>
+                    <a href="#chapitre4" class="toc-item"><i class="fas fa-microchip"></i> Chapitre 4 : Configuration Teensy/Arduino</a>
+                    <a href="#chapitre5" class="toc-item"><i class="fab fa-xbox"></i> Chapitre 5 : Configuration Manette Virtuelle</a>
+                    <a href="#chapitre6" class="toc-item"><i class="fas fa-tools"></i> Chapitre 6 : Dépannage & Support</a>
+                </div>
+            </div>
+
+            <!-- Livre d'instructions -->
+            <div class="guide-book">
+                
+                <!-- CHAPITRE 0 : VIGEMBUS OBLIGATOIRE -->
+                <div class="guide-chapter" id="chapitre0">
+                    <div class="chapter-header">
+                        <span class="chapter-number">00</span>
+                        <div class="chapter-title">
+                            <h3>PRÉREQUIS OBLIGATOIRE : ViGEmBus</h3>
+                            <p>Indispensable - Sans ça, le logiciel ne se lance pas</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-warning">
+                                <i class="fas fa-exclamation-circle"></i> <strong>HYPERION NE FONCTIONNE PAS SANS ViGEmBus.</strong> Le logiciel vérifie sa présence au démarrage et se ferme immédiatement s'il n'est pas installé.
+                            </div>
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-text">
+                                        <h4>Télécharger ViGEmBus</h4>
+                                        <p>Rendez-vous sur <a href="https://github.com/ViGEm/ViGEmBus/releases" target="_blank">GitHub ViGEm/ViGEmBus</a> et téléchargez la dernière version : <strong>ViGEmBus_1.22.0_x64_x86_arm64.exe</strong> (fichier .exe).</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-text">
+                                        <h4>Installer ViGEmBus</h4>
+                                        <p>Exécutez le fichier .exe téléchargé. Cliquez sur "Suivant" jusqu'à la fin de l'installation. Aucune configuration supplémentaire n'est requise.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-text">
+                                        <h4>Redémarrage (recommandé)</h4>
+                                        <p>Un redémarrage du PC n'est pas obligatoire mais fortement recommandé pour s'assurer que le pilote est bien chargé.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-text">
+                                        <h4>Lancer Hyperion</h4>
+                                        <p>Une fois ViGEmBus installé, Hyperion peut être lancé normalement, SANS droits administrateur.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="guide-note">
+                                <i class="fas fa-check-circle"></i> <strong>Installation unique :</strong> Vous n'aurez à installer ViGEmBus qu'une seule fois sur votre PC.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CHAPITRE 1 : INSTALLATION DE BASE -->
+                <div class="guide-chapter" id="chapitre1">
+                    <div class="chapter-header">
+                        <span class="chapter-number">01</span>
+                        <div class="chapter-title">
+                            <h3>Installation du logiciel</h3>
+                            <p>Téléchargement, extraction et premier lancement</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-download"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-note">
+                                <i class="fas fa-info-circle"></i> <strong>Note importante :</strong> Hyperion ne nécessite PAS d'être lancé en administrateur. Lancez-le normalement.
+                            </div>
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">Étape 1</div>
+                                    <div class="step-text">
+                                        <h4>Télécharger Hyperion</h4>
+                                        <p>Après votre achat, vous recevrez un email avec le lien de téléchargement. Le fichier est un .zip protégé par mot de passe (fourni dans l'email).</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">Étape 2</div>
+                                    <div class="step-text">
+                                        <h4>Extraire le dossier</h4>
+                                        <p>Faites un clic droit sur le fichier .zip et sélectionnez "Extraire tout". Choisissez un emplacement facile d'accès.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">Étape 3</div>
+                                    <div class="step-text">
+                                        <h4>Lancer Hyperion</h4>
+                                        <p>Double-cliquez sur Hyperion.exe. Aucun besoin de clic droit > administrateur. Le logiciel se lance normalement.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">Étape 4</div>
+                                    <div class="step-text">
+                                        <h4>Activer votre licence</h4>
+                                        <p>Entrez votre clé de licence (reçue par email) dans le champ prévu. Cliquez sur "Activer". Votre abonnement est lié à votre matériel.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAPITRE 2 : CONFIGURATION LOGITECH GHUB -->
+                <div class="guide-chapter" id="chapitre2">
+                    <div class="chapter-header">
+                        <span class="chapter-number">02</span>
+                        <div class="chapter-title">
+                            <h3>Configuration Logitech GHUB</h3>
+                            <p>Version 2021 UNIQUEMENT - Redémarrage OBLIGATOIRE</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-shield-alt"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-warning">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>IMPORTANT :</strong> Vous n'avez pas besoin d'une souris Logitech. Seul le logiciel GHUB version 2021 est requis. Les versions supérieures ne fonctionnent pas.
+                            </div>
+                            
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-text">
+                                        <h4>Télécharger Logitech GHUB 2021</h4>
+                                        <p>Téléchargez la version spécifique 2021 depuis le lien fourni dans votre email ou sur notre Discord. N'installez PAS de version plus récente.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-text">
+                                        <h4>Installer GHUB 2021</h4>
+                                        <p>Exécutez le fichier d'installation. Suivez les instructions. Une fois l'installation terminée, NE LANCEZ PAS Hyperion immédiatement.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-text">
+                                        <h4>REDÉMARRER VOTRE PC</h4>
+                                        <p><strong>Étape CRITIQUE :</strong> Redémarrez votre ordinateur. Sans ce redémarrage, Hyperion ne détectera pas GHUB 2021. C'est la cause #1 des problèmes Logitech.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-text">
+                                        <h4>Bloquer les mises à jour (Recommandé)</h4>
+                                        <p>Pour éviter que GHUB ne se mette à jour automatiquement, bloquez l'updater dans le pare-feu Windows (règles entrantes et sortantes sur <code>lghub_updater.exe</code>).</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">5</div>
+                                    <div class="step-text">
+                                        <h4>Lancer Hyperion et sélectionner Logitech</h4>
+                                        <p>Ouvrez Hyperion, allez dans Paramètres > Interface > Sélectionnez "LOGITECH". Testez le mouvement.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAPITRE 3 : CONFIGURATION RAZER -->
+                <div class="guide-chapter" id="chapitre3">
+                    <div class="chapter-header">
+                        <span class="chapter-number">03</span>
+                        <div class="chapter-title">
+                            <h3>Configuration Razer Synapse</h3>
+                            <p>Synapse 3 OU 4 - Aucune restriction de version</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-spider"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-note">
+                                <i class="fas fa-info-circle"></i> <strong>Bon à savoir :</strong> Contrairement à Logitech, Razer n'a pas de restriction de version. Synapse 3 et Synapse 4 fonctionnent tous les deux parfaitement.
+                            </div>
+                            
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-text">
+                                        <h4>Installer Razer Synapse</h4>
+                                        <p>Téléchargez Synapse 3 ou 4 depuis le site officiel de Razer. Installez-le et connectez-vous à votre compte Razer.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-text">
+                                        <h4>Connecter votre appareil Razer</h4>
+                                        <p>Branchez votre appareil Razer (clavier, souris, casque, tapis...). Vérifiez dans Synapse qu'il est bien reconnu.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-text">
+                                        <h4>Configurer dans Hyperion</h4>
+                                        <p>Lancez Hyperion → Paramètres → Interface → Sélectionnez "RAZER". Si Synapse est actif, Hyperion détectera automatiquement l'API.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-text">
+                                        <h4>Dépannage</h4>
+                                        <p>Si Razer n'est pas détecté : assurez-vous que Synapse est LANCÉ avant Hyperion, et que votre appareil est bien connecté.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAPITRE 4 : TEENSY/ARDUINO -->
+                <div class="guide-chapter" id="chapitre4">
+                    <div class="chapter-header">
+                        <span class="chapter-number">04</span>
+                        <div class="chapter-title">
+                            <h3>Configuration Teensy/Arduino</h3>
+                            <p>Programmation du microcontrôleur</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-microchip"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-text">
+                                        <h4>Installer Arduino IDE</h4>
+                                        <p>Téléchargez Arduino IDE depuis arduino.cc.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-text">
+                                        <h4>Installer les drivers Teensy (si nécessaire)</h4>
+                                        <p>Pour Teensy : Téléchargez les drivers depuis pjrc.com/teensy/td_download.html</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-text">
+                                        <h4>Copier le code</h4>
+                                        <p>Retournez à l'accueil du site, cliquez sur "Afficher le Code C++", copiez le code.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-text">
+                                        <h4>Uploader le code</h4>
+                                        <p>Dans Arduino IDE : Collez le code, sélectionnez le bon port COM et la bonne carte, cliquez sur "Téléverser".</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">5</div>
+                                    <div class="step-text">
+                                        <h4>Configurer Hyperion</h4>
+                                        <p>Dans Hyperion : Interface → Teensy → Sélectionnez le port COM correspondant.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAPITRE 5 : MANETTE VIRTUELLE + HIDHIDE -->
+                <div class="guide-chapter" id="chapitre5">
+                    <div class="chapter-header">
+                        <span class="chapter-number">05</span>
+                        <div class="chapter-title">
+                            <h3>Configuration Manette Virtuelle</h3>
+                            <p>Utilisation avec ViGEmBus</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fab fa-xbox"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-note">
+                                <i class="fas fa-info-circle"></i> <strong>Prérequis :</strong> ViGEmBus DOIT être installé (voir Chapitre 00).
+                            </div>
+                            
+                            <div class="step-list">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-text">
+                                        <h4>Vérifier ViGEmBus</h4>
+                                        <p>Assurez-vous que ViGEmBus est bien installé. Hyperion ne pourra pas créer la manette virtuelle sans cela.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-text">
+                                        <h4>Sélectionner l'interface dans Hyperion</h4>
+                                        <p>Dans Hyperion : Paramètres → Interface → Sélectionnez "GAMEPAD" ou "MANETTE VIRTUELLE".</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-text">
+                                        <h4>HidHide (si nécessaire)</h4>
+                                        <p>Si votre jeu détecte plusieurs manettes, installez HidHide pour cacher vos contrôleurs physiques. <strong>Ne cachez jamais votre souris.</strong></p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-text">
+                                        <h4>Ajuster la sensibilité</h4>
+                                        <p>Sensibilité recommandée : 60-70%, Deadzone : 10px.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAPITRE 6 : DÉPANNAGE & SUPPORT -->
+                <div class="guide-chapter" id="chapitre6">
+                    <div class="chapter-header">
+                        <span class="chapter-number">06</span>
+                        <div class="chapter-title">
+                            <h3>Dépannage & Support</h3>
+                            <p>Problèmes courants et solutions</p>
+                        </div>
+                        <div class="chapter-icon"><i class="fas fa-tools"></i></div>
+                    </div>
+                    <div class="chapter-content">
+                        <div class="chapter-content-inner">
+                            <div class="guide-warning">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>RAPPEL :</strong> Hyperion ne nécessite PAS de droits administrateur. Inutile de lancer en tant qu'admin.
+                            </div>
+                            
+                            <h4 style="color: var(--accent-color); margin: 20px 0 10px;">Problèmes fréquents :</h4>
+                            
+                            <div style="margin-bottom: 25px;">
+                                <p style="color: var(--text-color); font-weight: bold;"><i class="fas fa-exclamation-circle"></i> Le logiciel ne se lance pas :</p>
+                                <ul style="color: var(--text-muted); margin-left: 20px;">
+                                    <li>• Avez-vous installé ViGEmBus ? C'est OBLIGATOIRE.</li>
+                                    <li>• Si ViGEmBus est installé, essayez de redémarrer votre PC.</li>
+                                </ul>
+                            </div>
+                            
+                            <div style="margin-bottom: 25px;">
+                                <p style="color: var(--text-color); font-weight: bold;"><i class="fas fa-shield-alt"></i> Logitech GHUB non détecté :</p>
+                                <ul style="color: var(--text-muted); margin-left: 20px;">
+                                    <li>• Avez-vous installé la version 2021 ? Les versions récentes ne sont PAS compatibles.</li>
+                                    <li>• Avez-vous REDÉMARRÉ votre PC après l'installation de GHUB 2021 ? C'est obligatoire.</li>
+                                    <li>• L'updater est-il bloqué dans le pare-feu ?</li>
+                                </ul>
+                            </div>
+                            
+                            <div style="margin-bottom: 25px;">
+                                <p style="color: var(--text-color); font-weight: bold;"><i class="fas fa-spider"></i> Razer non détecté :</p>
+                                <ul style="color: var(--text-muted); margin-left: 20px;">
+                                    <li>• Synapse 3 ou 4 fonctionnent tous les deux.</li>
+                                    <li>• Lancez Synapse AVANT Hyperion.</li>
+                                    <li>• Vérifiez que votre appareil Razer est bien connecté.</li>
+                                </ul>
+                            </div>
+                            
+                            <div style="margin-bottom: 25px;">
+                                <p style="color: var(--text-color); font-weight: bold;"><i class="fas fa-microchip"></i> Teensy/Arduino non détecté :</p>
+                                <ul style="color: var(--text-muted); margin-left: 20px;">
+                                    <li>• Vérifiez le port COM dans le Gestionnaire de périphériques.</li>
+                                    <li>• Le code est-il bien uploadé ?</li>
+                                    <li>• Essayez un autre port USB.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="discord-support">
+                                <h3><i class="fab fa-discord"></i> Support Discord</h3>
+                                <p>Notre équipe est active 7j/7. Rejoignez-nous pour une assistance rapide.</p>
+                                <a href="https://discord.gg/8Ma63wBayu" class="discord-button" target="_blank">
+                                    <i class="fab fa-discord"></i> Rejoindre le support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page d'abonnement - AVEC TON VRAI BOUTON PAYPAL -->
+    <section id="login-page" class="login-section">
+        <div class="container">
+            <div class="login-card">
+                <h2 class="login-title">Abonnement Hyperion AI</h2>
+                <p class="login-subtitle">Accès au logiciel et mises à jour - 25€/mois</p>
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 2.5rem; color: var(--accent-color); font-weight: 900; margin-bottom: 10px;">25€ / mois</div>
+                    <div style="color: var(--text-muted); margin-bottom: 20px;">Sans engagement • Résiliez quand vous voulez</div>
+                </div>
+                
+                <!-- ===== PARTIE 2 PAYPAL - TON BOUTON VALIDE ===== -->
+                <div id="paypal-container-SEFUAKAPTYATQ"></div>
+                <script>
+                    paypal.HostedButtons({
+                        hostedButtonId: "SEFUAKAPTYATQ",
+                    }).render("#paypal-container-SEFUAKAPTYATQ")
+                    .catch(function(error) {
+                        console.error("Erreur PayPal:", error);
+                        document.getElementById('paypal-container-SEFUAKAPTYATQ').innerHTML = '<div style="color: var(--error-color); padding: 20px; text-align: center;">⚠️ Erreur de chargement PayPal. Rafraîchissez la page ou contactez le support.</div>';
+                    });
+                </script>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <a href="#" style="color: var(--accent-color); text-decoration: none;" id="view-terms">Voir les conditions d'abonnement</a>
+                </div>
+                
+                <div class="discord-support" style="margin-top: 30px;">
+                    <h3><i class="fab fa-discord"></i> Support après-vente</h3>
+                    <p>Après votre abonnement, pour toute question technique ou assistance, rejoignez notre serveur Discord.</p>
+                    <a href="https://discord.gg/8Ma63wBayu" class="discord-button" target="_blank">
+                        <i class="fab fa-discord"></i> Support Discord
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">HYPERION AI</div>
+                    <p style="color: var(--text-muted); text-align: left;">Logiciel de vision par ordinateur. Aucune lecture mémoire - abonnement mensuel.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" data-page="home">Accueil</a></li>
+                        <li><a href="#" data-page="features">Fonctionnalités</a></li>
+                        <li><a href="#" data-page="development">Prérequis</a></li>
+                        <li><a href="#" data-page="compatibility">Compatibilité</a></li>
+                        <li><a href="#" data-page="security">Sécurité</a></li>
+                        <li><a href="#" data-page="requirements">Configurations</a></li>
+                        <li><a href="#" data-page="guide">Guide d'utilisation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" id="support-link">Support Technique</a></li>
+                        <li><a href="#" data-page="guide">Guide d'installation</a></li>
+                        <li><a href="https://discord.gg/8Ma63wBayu" target="_blank">Serveur Discord</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Légal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" id="terms-link">Conditions d'utilisation</a></li>
+                        <li><a href="#" id="privacy-link">Confidentialité</a></li>
+                        <li><a href="#" id="refund-link">Politique de remboursement</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="copyright">© 2023 Hyperion AI Bot. Logiciel éducatif - Utilisation compétitive interdite. Abonnement mensuel sans engagement.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation entre pages
+        function navigateToPage(page) {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('guide-page').classList.remove('active');
+            document.getElementById('login-page').classList.remove('active');
+            document.querySelector('.mobile-menu').classList.remove('active');
+            
+            document.querySelectorAll('.nav-links a, .mobile-menu-links a').forEach(a => {
+                a.classList.remove('active');
+            });
+            
+            if (page === 'login') {
+                document.getElementById('login-page').classList.add('active');
+                document.querySelector('.nav-links a[data-page="home"]').classList.add('active');
+            } else if (page === 'guide') {
+                document.getElementById('guide-page').classList.add('active');
+                const activeLink = document.querySelector(`.nav-links a[data-page="${page}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            } else {
+                document.getElementById('home-page').style.display = 'block';
+                const activeLink = document.querySelector(`.nav-links a[data-page="${page}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                } else {
+                    document.querySelector('.nav-links a[data-page="home"]').classList.add('active');
+                }
+                
+                const mobileActiveLink = document.querySelector(`.mobile-menu-links a[data-page="${page}"]`);
+                if (mobileActiveLink) mobileActiveLink.classList.add('active');
+                
+                if (page === 'features') {
+                    document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'development') {
+                    document.querySelector('.development-status').scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'compatibility') {
+                    document.querySelector('.compatibility-details').scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'security') {
+                    document.querySelector('.security').scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'requirements') {
+                    document.querySelector('.requirements').scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'home') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Navigation links
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.getAttribute('data-page');
+                navigateToPage(page);
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Toggle code display
+        const codeToggle = document.getElementById('code-toggle');
+        const codeContainer = document.getElementById('code-container');
+        
+        if (codeToggle) {
+            codeToggle.addEventListener('click', function() {
+                codeContainer.classList.toggle('active');
+                this.classList.toggle('active');
+                if (codeContainer.classList.contains('active')) {
+                    this.innerHTML = '<i class="fas fa-chevron-up"></i> Masquer le Code C++ Teensy/Arduino';
+                } else {
+                    this.innerHTML = '<i class="fas fa-chevron-down"></i> Afficher le Code C++ Teensy/Arduino';
+                }
+            });
+        }
+
+        // Copy code functionality
+        const copyButton = document.getElementById('copy-code');
+        const codeContent = document.getElementById('code-content');
+        
+        if (copyButton && codeContent) {
+            copyButton.addEventListener('click', function() {
+                const textToCopy = codeContent.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '<i class="fas fa-check"></i> Copié !';
+                    copyButton.style.backgroundColor = 'rgba(0, 255, 157, 0.2)';
+                    copyButton.style.borderColor = 'var(--success-color)';
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                        copyButton.style.backgroundColor = 'rgba(0, 210, 255, 0.1)';
+                        copyButton.style.borderColor = 'rgba(0, 210, 255, 0.3)';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Erreur lors de la copie : ', err);
+                    alert('Impossible de copier le code. Veuillez le sélectionner manuellement.');
+                });
+            });
+        }
+
+        // Toggle chapters
+        document.querySelectorAll('.chapter-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const chapter = this.closest('.guide-chapter');
+                chapter.classList.toggle('active');
+                
+                document.querySelectorAll('.guide-chapter').forEach(c => {
+                    if (c !== chapter && c.classList.contains('active')) {
+                        c.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Ouvrir le premier chapitre par défaut
+        window.addEventListener('load', function() {
+            const firstChapter = document.querySelector('.guide-chapter');
+            if (firstChapter) {
+                firstChapter.classList.add('active');
+            }
+            
+            // Vérifier que PayPal est chargé
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK non chargé!');
+            }
+        });
+
+        // Liens du sommaire
+        document.querySelectorAll('.toc-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                const targetId = href.substring(1);
+                const targetChapter = document.getElementById(targetId);
+                
+                if (targetChapter) {
+                    document.querySelectorAll('.guide-chapter').forEach(c => {
+                        c.classList.remove('active');
+                    });
+                    targetChapter.classList.add('active');
+                    targetChapter.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // View terms
+        const viewTerms = document.getElementById('view-terms');
+        if (viewTerms) {
+            viewTerms.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Conditions d\'abonnement:\n\n1. Abonnement mensuel de 25€ TTC\n2. Résiliable à tout moment depuis votre espace client\n3. Accès au logiciel pendant la durée de l\'abonnement\n4. Mises à jour incluses\n5. Support technique inclus\n6. Aucun remboursement partiel ou prorata\n\nPour résilier : Contactez-nous sur Discord.');
+            });
+        }
+
+        // Effet de fond
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.body.style.backgroundImage = `
+                radial-gradient(circle at ${x*100}% ${y*100}%, rgba(106, 17, 203, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at ${100 - x*100}% ${100 - y*100}%, rgba(0, 210, 255, 0.15) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--dark-bg), var(--darker-bg))
+            `;
+        });
+
+        window.addEventListener('scroll', function() {
+            if (mobileMenu) mobileMenu.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
